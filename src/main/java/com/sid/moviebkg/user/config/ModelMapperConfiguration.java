@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelMapperConfiguration {
 
-    @Bean(name = "user-modelmapper")
+    @Bean(name = "userModelMapper")
     public ModelMapper getModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper;
     }
 
-    @Bean(name = "user-auth-modelmapper")
+    @Bean(name = "userAuthModelMapper")
     public ModelMapper getAuthModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setAmbiguityIgnored(true);

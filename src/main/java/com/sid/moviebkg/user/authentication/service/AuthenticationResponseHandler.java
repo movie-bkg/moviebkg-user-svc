@@ -14,11 +14,11 @@ import com.sid.moviebkg.user.authentication.repository.UserRepository;
 import com.sid.moviebkg.user.authentication.utils.AuthUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -36,32 +36,32 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.*;
 @Service
 public class AuthenticationResponseHandler {
 
-    private MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationResponseHandler.class);
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ResponseMsgConfiguration msgConfiguration;
-
-    @Autowired
-    @Qualifier("user-auth-modelmapper")
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private AuthUtils authUtils;
-
-    @Autowired
-    private TokenService tokenService;
-
+    private final MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationResponseHandler.class);
+    private final UserRepository userRepository;
+    private final ResponseMsgConfiguration msgConfiguration;
+    private final ModelMapper modelMapper;
+    private final AuthUtils authUtils;
+    private final TokenService tokenService;
+    private final PasswordEncoder passwordEncoder;
     @Value("${token.disabled:#{null}}")
     private Boolean tokenDisabled;
+
+    public AuthenticationResponseHandler(UserRepository userRepository, ResponseMsgConfiguration msgConfiguration,
+                                         @Qualifier("userAuthModelMapper") ModelMapper modelMapper, AuthUtils authUtils,
+                                         TokenService tokenService, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.msgConfiguration = msgConfiguration;
+        this.modelMapper = modelMapper;
+        this.authUtils = authUtils;
+        this.tokenService = tokenService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public UserDto authenticateUser(AuthRequestDto request) {
         UserLogin userLogin = UserLogin.builder().build();
         if (StringUtils.hasText(request.getLogin()) && StringUtils.hasText(request.getPassword())) {
-            Optional<UserLogin> usr = userRepository.findByEmailAndPassword(request.getLogin(), request.getPassword());
-            if (usr.isEmpty()) {
+            Optional<UserLogin> usr = userRepository.findByEmail(request.getLogin());
+            if (usr.isEmpty() || !isPasswordValid(request.getPassword(), usr.get().getPassword())) {
                 List<MessageDto> messageDtos = msgConfiguration.getMessages();
                 ResponseMsgDto responseMsgDto = findMsgAndPopulateResponse(LOGIN_FAILED_WITH_ERROR, ERR_1004, messageDtos);
                 throw new AuthFailureException(HttpStatus.BAD_REQUEST, responseMsgDto);
@@ -76,10 +76,16 @@ public class AuthenticationResponseHandler {
         return userDto;
     }
 
+    private boolean isPasswordValid(String incomingPswd, String dbPswd) {
+        return passwordEncoder.matches(incomingPswd, dbPswd);
+    }
+
     public UserDto registerUser(RegisterRequestDto requestDto) {
         UserDto userDto;
         try {
             UserLogin userLogin = modelMapper.map(requestDto, UserLogin.class);
+            String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
+            userLogin.setPassword(encryptedPassword);
             userLogin.setRole("USER");
             userLogin.setCreatedDateTime(LocalDateTime.now(Clock.systemUTC()));
             userLogin.setUpdatedDateTime(LocalDateTime.now(Clock.systemUTC()));

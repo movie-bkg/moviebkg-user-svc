@@ -6,8 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,16 +32,14 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.*;
 
 @Component
 @Order(2)
+@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtService jwtService;
-
+    private final JwtService jwtService;
     @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
-
+    private final String secretKey;
     @Value("${token.disabled:#{null}}")
-    private Boolean tokenDisabled;
+    private final Boolean tokenDisabled;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -62,29 +60,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         jwt = authHeader.substring(7);
         userId = jwtService.extractUsername(jwt, secretKey);
-        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtService.isTokenValid(jwt, secretKey)) {
-
-                Claims claims = jwtService.extractAllClaims(jwt, secretKey);
-                String roles = claims.get("role", String.class);
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                if (StringUtils.hasText(roles)) {
-                    authorities = Arrays.stream(roles.split(","))
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList());
-                }
-
-                UserDetails userDetails = new User(userId, userId, authorities);
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null && jwtService.isTokenValid(jwt, secretKey)) {
+            Claims claims = jwtService.extractAllClaims(jwt, secretKey);
+            String roles = claims.get("role", String.class);
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            if (StringUtils.hasText(roles)) {
+                authorities = Arrays.stream(roles.split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
             }
+
+            UserDetails userDetails = new User(userId, userId, authorities);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
         filterChain.doFilter(request, response);
     }

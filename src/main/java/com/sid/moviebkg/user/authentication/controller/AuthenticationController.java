@@ -13,9 +13,9 @@ import com.sid.moviebkg.user.authentication.dto.response.UserDto;
 import com.sid.moviebkg.user.authentication.exception.AuthFailureException;
 import com.sid.moviebkg.user.authentication.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,21 +29,13 @@ import static com.sid.moviebkg.common.utils.ResponseMsgDtoUtil.findMsgAndPopulat
 import static com.sid.moviebkg.user.util.UserCmnConstants.*;
 
 @RestController
+@AllArgsConstructor
 public class AuthenticationController {
-
-    private MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationController.class);
-
-    @Autowired
-    private ProducerTemplate producerTemplate;
-
-    @Autowired
-    private ResponseMsgConfiguration msgConfiguration;
-
-    @Autowired
-    private TokenService tokenService;
-
-    @Autowired
-    private ExceptionUtils exceptionUtils;
+    private final MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationController.class);
+    private final ProducerTemplate producerTemplate;
+    private final ResponseMsgConfiguration msgConfiguration;
+    private final TokenService tokenService;
+    private final ExceptionUtils exceptionUtils;
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto login(@RequestBody AuthRequestDto request) {
