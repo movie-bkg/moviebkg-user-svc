@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movie-bkg?currentSchema=mv_bkg_usr
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximumPoolSize: 20
+      minimumIdle: 10
+      autoCommit: true
+  jpa:
+    show-sql: true
+    hibernate:
+      #      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true

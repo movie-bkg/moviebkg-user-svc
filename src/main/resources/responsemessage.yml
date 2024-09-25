@@ -1,0 +1,31 @@
+# Response Code for Error and validation scenarios
+moviebkg:
+  response:
+    messages:
+      -
+        code: 1001
+        message: User does not have access to MovieBkg Application
+      -
+        code: 1002
+        message: User not authorized to login MovieBkg Application
+      -
+        code: 1003
+        message: Username/Email/Phone and password are mandatory for login
+      -
+        code: 1004
+        message: User does not exist
+      -
+        code: 1005
+        message: Please provide mandatory fields
+      -
+        code: 1006
+        message: Registration failed due to Internal Server Error
+      -
+        code: 1007
+        message: Username {0} already exists
+      -
+        code: 1008
+        message: Email {0} already exists
+      -
+        code: 1009
+        message: Phone {0} already exists
