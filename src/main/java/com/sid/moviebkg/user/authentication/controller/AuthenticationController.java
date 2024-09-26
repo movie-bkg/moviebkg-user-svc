@@ -13,7 +13,7 @@ import com.sid.moviebkg.user.authentication.dto.response.UserDto;
 import com.sid.moviebkg.user.authentication.exception.AuthFailureException;
 import com.sid.moviebkg.user.authentication.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
@@ -29,9 +29,9 @@ import static com.sid.moviebkg.common.utils.ResponseMsgDtoUtil.findMsgAndPopulat
 import static com.sid.moviebkg.user.util.UserCmnConstants.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationController {
-    private final MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationController.class);
+    private MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationController.class);
     private final ProducerTemplate producerTemplate;
     private final ResponseMsgConfiguration msgConfiguration;
     private final TokenService tokenService;

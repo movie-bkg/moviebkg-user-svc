@@ -36,7 +36,7 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.*;
 @Service
 public class AuthenticationResponseHandler {
 
-    private final MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationResponseHandler.class);
+    private MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationResponseHandler.class);
     private final UserRepository userRepository;
     private final ResponseMsgConfiguration msgConfiguration;
     private final ModelMapper modelMapper;

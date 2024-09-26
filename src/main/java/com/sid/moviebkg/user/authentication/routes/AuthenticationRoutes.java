@@ -4,15 +4,15 @@ import com.sid.moviebkg.common.logging.MBkgLogger;
 import com.sid.moviebkg.common.logging.MBkgLoggerFactory;
 import com.sid.moviebkg.common.utils.StopWatch;
 import com.sid.moviebkg.user.authentication.service.AuthenticationResponseHandler;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationRoutes extends RouteBuilder {
 
-    private final MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationRoutes.class);
+    private MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationRoutes.class);
     private final StopWatch stopWatch;
     private final AuthenticationResponseHandler authenticationResponseHandler;
 
