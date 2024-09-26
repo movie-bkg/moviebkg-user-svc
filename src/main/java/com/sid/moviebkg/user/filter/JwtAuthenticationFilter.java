@@ -37,9 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     @Value("${application.security.jwt.secret-key}")
-    private final String secretKey;
+    private String secretKey;
     @Value("${token.disabled:#{null}}")
-    private final Boolean tokenDisabled;
+    private Boolean tokenDisabled;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
