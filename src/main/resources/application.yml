@@ -26,7 +26,7 @@ application:
   security:
     jwt:
       secret-key: a37931c235406b0a24a00317e915a0f3e3b45a40b8282db1d916179cf77ce5a1a3d2d57d2f1ed
-      expiration: 600000
+      expiration: 3600000
 
 # Configuring for enabling and disabling jwt token flow
 token:

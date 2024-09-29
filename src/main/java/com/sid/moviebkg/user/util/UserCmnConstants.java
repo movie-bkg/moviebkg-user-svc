@@ -26,6 +26,7 @@ public class UserCmnConstants {
 
     public static final String LOGIN_FAILED_WITH_ERROR = "Login Failed with error";
     public static final String REGISTER_FAILED_WITH_ERROR = "Register Failed with error";
+    public static final String OPERATION_FAILED_WITH_ERROR = "Operation Failed with error";
     public static final String ERR_1003 = "1003";
     public static final String ERR_1004 = "1004";
     public static final String ERR_1005 = "1005";
@@ -33,5 +34,6 @@ public class UserCmnConstants {
     public static final String ERR_1007 = "1007";
     public static final String ERR_1008 = "1008";
     public static final String ERR_1009 = "1009";
+    public static final String ERR_1010 = "1010";
 
 }

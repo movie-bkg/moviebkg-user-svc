@@ -9,7 +9,7 @@ import com.sid.moviebkg.user.authentication.dto.AuthRequestDto;
 import com.sid.moviebkg.user.authentication.dto.RegisterRequestDto;
 import com.sid.moviebkg.user.authentication.dto.response.UserDto;
 import com.sid.moviebkg.user.authentication.exception.AuthFailureException;
-import com.sid.moviebkg.user.authentication.model.UserLogin;
+import com.sid.moviebkg.user.model.UserLogin;
 import com.sid.moviebkg.user.authentication.repository.UserRepository;
 import com.sid.moviebkg.user.authentication.utils.AuthUtils;
 import org.apache.commons.lang3.BooleanUtils;

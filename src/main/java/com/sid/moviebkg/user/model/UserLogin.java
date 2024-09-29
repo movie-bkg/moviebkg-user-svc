@@ -1,4 +1,4 @@
-package com.sid.moviebkg.user.authentication.model;
+package com.sid.moviebkg.user.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -37,4 +38,10 @@ public class UserLogin {
     private LocalDateTime createdDateTime;
     @Column(name = "A_Upd_Dtm")
     private LocalDateTime updatedDateTime;
+
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.EAGER
+    )
+    private List<UserPreference> preferences;
 }

@@ -1,6 +1,6 @@
 package com.sid.moviebkg.user.authentication.repository;
 
-import com.sid.moviebkg.user.authentication.model.UserLogin;
+import com.sid.moviebkg.user.model.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

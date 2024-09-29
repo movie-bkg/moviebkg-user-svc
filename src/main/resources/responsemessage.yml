@@ -29,3 +29,6 @@ moviebkg:
       -
         code: 1009
         message: Phone {0} already exists
+      -
+        code: 1010
+        message: Operation failed due to Internal Server Error
