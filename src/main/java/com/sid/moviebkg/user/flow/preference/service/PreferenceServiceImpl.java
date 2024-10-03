@@ -4,13 +4,14 @@ import com.sid.moviebkg.common.dto.MessageDto;
 import com.sid.moviebkg.common.dto.ResponseMsgDto;
 import com.sid.moviebkg.user.authentication.config.ResponseMsgConfiguration;
 import com.sid.moviebkg.user.authentication.repository.UserRepository;
+import com.sid.moviebkg.user.flow.exception.UserFlowException;
 import com.sid.moviebkg.user.flow.preference.dto.PreferenceDto;
 import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
-import com.sid.moviebkg.user.flow.preference.exception.UserNotFoundException;
-import com.sid.moviebkg.user.flow.preference.mapper.UserPrefMapper;
 import com.sid.moviebkg.user.flow.preference.repository.UserPreferenceRepository;
+import com.sid.moviebkg.user.mapper.UserCmnMapper;
 import com.sid.moviebkg.user.model.UserLogin;
 import com.sid.moviebkg.user.model.UserPreference;
+import com.sid.moviebkg.user.util.UserCmnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.sid.moviebkg.common.utils.ResponseMsgDtoUtil.findMsgAndPopulateResponse;
-import static com.sid.moviebkg.user.util.UserCmnConstants.*;
+import static com.sid.moviebkg.user.util.UserCmnConstants.ERR_1004;
+import static com.sid.moviebkg.user.util.UserCmnConstants.OPERATION_FAILED_WITH_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,8 @@ public class PreferenceServiceImpl implements PreferenceService {
 
     private final UserPreferenceRepository preferenceRepository;
     private final UserRepository userRepository;
-    private final UserPrefMapper userPrefMapper;
+    private final UserCmnUtils userCmnUtils;
+    private final UserCmnMapper userCmnMapper;
     private final ResponseMsgConfiguration msgConfiguration;
 
     @Override
@@ -42,42 +45,28 @@ public class PreferenceServiceImpl implements PreferenceService {
             if (user.isEmpty()) {
                 List<MessageDto> messageDtos = msgConfiguration.getMessages();
                 ResponseMsgDto responseMsgDto = findMsgAndPopulateResponse(OPERATION_FAILED_WITH_ERROR, ERR_1004, messageDtos);
-                throw new UserNotFoundException(HttpStatus.BAD_REQUEST, responseMsgDto);
+                throw new UserFlowException(HttpStatus.BAD_REQUEST, responseMsgDto);
             }
             List<PreferenceDto> incomingPreferences = preferenceRequest.getPreferences();
             List<UserPreference> dbPreferences = preferenceRepository.findByUser(user.get());
-            List<PreferenceDto> preferencesToSave = filterPreferences(incomingPreferences, dbPreferences);
+            List<PreferenceDto> preferencesToSave = userCmnUtils.filterList(incomingPreferences, incoming -> !userCmnUtils.isAlreadyPresent(
+                    incoming, dbPreferences, (preferenceDto, dbPreference) -> Objects.equals(dbPreference.getGenre(), incoming.getGenre())
+                            && Objects.equals(dbPreference.getLanguage(), incoming.getLanguage())
+            ));
             if (CollectionUtils.isEmpty(preferencesToSave)) {
                 ResponseMsgDto responseMsgDto = ResponseMsgDto.builder()
                         .exception("Preferences already exists.")
                         .build();
-                throw new UserNotFoundException(HttpStatus.BAD_REQUEST, responseMsgDto);
+                throw new UserFlowException(HttpStatus.BAD_REQUEST, responseMsgDto);
             }
-            List<UserPreference> userPreferences = userPrefMapper.mapToUserPreferences(preferencesToSave, user.get());
+            List<UserPreference> userPreferences = userCmnMapper.mapToUserPreferences(preferencesToSave, user.get());
             preferenceRepository.saveAll(userPreferences);
         } else {
             ResponseMsgDto responseMsgDto = ResponseMsgDto.builder()
                     .exception("Mandatory fields are not present. UserId and Preferences are mandatory.")
                     .build();
-            throw new UserNotFoundException(HttpStatus.BAD_REQUEST, responseMsgDto);
+            throw new UserFlowException(HttpStatus.BAD_REQUEST, responseMsgDto);
         }
-    }
-
-    private List<PreferenceDto> filterPreferences(List<PreferenceDto> incomingPreferences, List<UserPreference> dbPreferences) {
-        return incomingPreferences.stream()
-                .filter(preferenceDto -> !isAlreadyPresent(preferenceDto, dbPreferences))
-                .toList();
-    }
-
-    private boolean isAlreadyPresent(PreferenceDto preferenceDto, List<UserPreference> dbPreferences) {
-        boolean isPresent = false;
-        for (UserPreference dbPreference : dbPreferences) {
-            if (Objects.equals(dbPreference.getGenre(), preferenceDto.getGenre()) && Objects.equals(dbPreference.getLanguage(), preferenceDto.getLanguage())) {
-                isPresent = true;
-                break;
-            }
-        }
-        return isPresent;
     }
 
     @Override
@@ -86,12 +75,12 @@ public class PreferenceServiceImpl implements PreferenceService {
         if (user.isEmpty()) {
             List<MessageDto> messageDtos = msgConfiguration.getMessages();
             ResponseMsgDto responseMsgDto = findMsgAndPopulateResponse(OPERATION_FAILED_WITH_ERROR, ERR_1004, messageDtos);
-            throw new UserNotFoundException(HttpStatus.BAD_REQUEST, responseMsgDto);
+            throw new UserFlowException(HttpStatus.BAD_REQUEST, responseMsgDto);
         }
         List<UserPreference> userPrefObjs = preferenceRepository.findByUser(user.get());
         UserPreferenceDto userPreferenceDto = UserPreferenceDto.builder().build();
         if (!CollectionUtils.isEmpty(userPrefObjs)) {
-            userPreferenceDto = userPrefMapper.mapToUserPreferenceDto(userPrefObjs);
+            userPreferenceDto = userCmnMapper.mapToUserPreferenceDto(userPrefObjs);
             userPreferenceDto.setUserId(userId);
         }
         return userPreferenceDto;
@@ -100,6 +89,9 @@ public class PreferenceServiceImpl implements PreferenceService {
     private boolean isRequestValid(UserPreferenceDto preferenceRequest) {
         return preferenceRequest != null && preferenceRequest.getUserId() != null
                 && StringUtils.hasText(preferenceRequest.getUserId())
-                && !CollectionUtils.isEmpty(preferenceRequest.getPreferences());
+                && !CollectionUtils.isEmpty(preferenceRequest.getPreferences())
+                && userCmnUtils.validateList(preferenceRequest.getPreferences(), preferenceDto ->
+                !StringUtils.hasText(preferenceDto.getGenre())
+                || !StringUtils.hasText(preferenceDto.getLanguage()));
     }
 }

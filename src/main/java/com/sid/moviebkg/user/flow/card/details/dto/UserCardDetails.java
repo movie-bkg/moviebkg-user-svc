@@ -1,4 +1,4 @@
-package com.sid.moviebkg.user.flow.preference.dto;
+package com.sid.moviebkg.user.flow.card.details.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class UserPreferenceDto {
+public class UserCardDetails {
     private String userId;
-    private List<PreferenceDto> preferences;
+    private List<CardDetailsDto> cardDetails;
 }

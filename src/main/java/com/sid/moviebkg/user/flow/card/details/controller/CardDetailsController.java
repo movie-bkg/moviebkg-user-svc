@@ -1,12 +1,12 @@
-package com.sid.moviebkg.user.flow.preference.controller;
+package com.sid.moviebkg.user.flow.card.details.controller;
 
 import com.sid.moviebkg.common.dto.ResponseMsgDto;
 import com.sid.moviebkg.common.logging.MBkgLogger;
 import com.sid.moviebkg.common.logging.MBkgLoggerFactory;
 import com.sid.moviebkg.common.utils.ExceptionUtils;
-import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
+import com.sid.moviebkg.user.flow.card.details.dto.UserCardDetails;
+import com.sid.moviebkg.user.flow.card.details.service.CardDetailsService;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
-import com.sid.moviebkg.user.flow.preference.service.PreferenceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,17 +18,17 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.CONTENT_TYPE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user/preferences")
-public class PreferenceController {
+@RequestMapping("/user/card/details")
+public class CardDetailsController {
 
-    private MBkgLogger logger = MBkgLoggerFactory.getLogger(PreferenceController.class);
-    private final PreferenceService preferenceService;
+    private MBkgLogger logger = MBkgLoggerFactory.getLogger(CardDetailsController.class);
     private final ExceptionUtils exceptionUtils;
+    private final CardDetailsService cardDetailsService;
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> savePreferences(@RequestBody UserPreferenceDto requestDto) {
+    public ResponseEntity<Object> saveCardDetails(@RequestBody UserCardDetails requestDto) {
         try {
-            preferenceService.savePreferences(requestDto);
+            cardDetailsService.saveCardDetails(requestDto);
         } catch (Exception exception) {
             throw exceptionUtils.getException(exception, ex -> new UserFlowException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()),
                     UserFlowException.class::isInstance);
@@ -37,11 +37,11 @@ public class PreferenceController {
     }
 
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserPreferenceDto fetchPreferences(@PathVariable("userId") String userId) {
-        UserPreferenceDto response;
+    public UserCardDetails fetchCardDetails(@PathVariable("userId") String userId) {
+        UserCardDetails response;
         try {
             if (StringUtils.hasText(userId)) {
-                response = preferenceService.findPreferencesByUserId(userId);
+                response = cardDetailsService.findCardDetailsByUserId(userId);
             } else {
                 ResponseMsgDto responseMsgDto = ResponseMsgDto.builder()
                         .exception("Mandatory fields are not present. UserId is mandatory.")
@@ -63,5 +63,4 @@ public class PreferenceController {
                 .header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(responseMsgDto);
     }
-
 }

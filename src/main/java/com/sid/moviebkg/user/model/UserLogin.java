@@ -44,4 +44,10 @@ public class UserLogin {
             fetch = FetchType.EAGER
     )
     private List<UserPreference> preferences;
+
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.EAGER
+    )
+    private List<CardDetails> cardDetails;
 }
