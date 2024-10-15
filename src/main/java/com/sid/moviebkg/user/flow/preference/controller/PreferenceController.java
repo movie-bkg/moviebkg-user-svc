@@ -7,6 +7,7 @@ import com.sid.moviebkg.common.utils.ExceptionUtils;
 import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
 import com.sid.moviebkg.user.flow.preference.service.PreferenceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.CONTENT_TYPE;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 @RequestMapping("/user/preferences")
 public class PreferenceController {
 

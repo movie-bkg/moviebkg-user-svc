@@ -12,6 +12,7 @@ import com.sid.moviebkg.user.authentication.dto.response.RefreshTokenDto;
 import com.sid.moviebkg.user.authentication.dto.response.UserDto;
 import com.sid.moviebkg.user.authentication.exception.AuthFailureException;
 import com.sid.moviebkg.user.authentication.service.TokenService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.ProducerTemplate;
@@ -30,6 +31,7 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.*;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class AuthenticationController {
     private MBkgLogger logger = MBkgLoggerFactory.getLogger(AuthenticationController.class);
     private final ProducerTemplate producerTemplate;

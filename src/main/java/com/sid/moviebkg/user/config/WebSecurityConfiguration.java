@@ -61,6 +61,6 @@ public class WebSecurityConfiguration {
                     .addFilterAfter(traceResponseFilter, JwtAuthenticationFilter.class);
         }
 
-        return http.build();
+        return httpSecurity.build();
     }
 }

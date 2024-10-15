@@ -7,6 +7,7 @@ import com.sid.moviebkg.common.utils.ExceptionUtils;
 import com.sid.moviebkg.user.flow.card.details.dto.UserCardDetails;
 import com.sid.moviebkg.user.flow.card.details.service.CardDetailsService;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import static com.sid.moviebkg.user.util.UserCmnConstants.CONTENT_TYPE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/card/details")
+@SecurityRequirement(name = "Authorization")
 public class CardDetailsController {
 
     private MBkgLogger logger = MBkgLoggerFactory.getLogger(CardDetailsController.class);
