@@ -1,7 +1,7 @@
 package com.sid.moviebkg.user.flow.preference.repository;
 
-import com.sid.moviebkg.user.model.UserLogin;
-import com.sid.moviebkg.user.model.UserPreference;
+import com.sid.moviebkg.common.model.user.UserLogin;
+import com.sid.moviebkg.common.model.user.UserPreference;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

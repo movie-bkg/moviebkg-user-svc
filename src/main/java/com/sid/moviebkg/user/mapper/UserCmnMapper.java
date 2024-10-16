@@ -1,12 +1,12 @@
 package com.sid.moviebkg.user.mapper;
 
+import com.sid.moviebkg.common.model.user.CardDetails;
+import com.sid.moviebkg.common.model.user.UserLogin;
+import com.sid.moviebkg.common.model.user.UserPreference;
 import com.sid.moviebkg.user.flow.card.details.dto.CardDetailsDto;
 import com.sid.moviebkg.user.flow.card.details.dto.UserCardDetails;
 import com.sid.moviebkg.user.flow.preference.dto.PreferenceDto;
 import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
-import com.sid.moviebkg.user.model.CardDetails;
-import com.sid.moviebkg.user.model.UserLogin;
-import com.sid.moviebkg.user.model.UserPreference;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;

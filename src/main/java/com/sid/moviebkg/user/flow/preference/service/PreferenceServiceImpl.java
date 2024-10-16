@@ -2,6 +2,8 @@ package com.sid.moviebkg.user.flow.preference.service;
 
 import com.sid.moviebkg.common.dto.MessageDto;
 import com.sid.moviebkg.common.dto.ResponseMsgDto;
+import com.sid.moviebkg.common.model.user.UserLogin;
+import com.sid.moviebkg.common.model.user.UserPreference;
 import com.sid.moviebkg.user.authentication.config.ResponseMsgConfiguration;
 import com.sid.moviebkg.user.authentication.repository.UserRepository;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
@@ -9,8 +11,6 @@ import com.sid.moviebkg.user.flow.preference.dto.PreferenceDto;
 import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
 import com.sid.moviebkg.user.flow.preference.repository.UserPreferenceRepository;
 import com.sid.moviebkg.user.mapper.UserCmnMapper;
-import com.sid.moviebkg.user.model.UserLogin;
-import com.sid.moviebkg.user.model.UserPreference;
 import com.sid.moviebkg.user.util.UserCmnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

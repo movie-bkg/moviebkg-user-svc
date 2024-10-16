@@ -1,7 +1,8 @@
 package com.sid.moviebkg.user.flow.card.details.repository;
 
-import com.sid.moviebkg.user.model.CardDetails;
-import com.sid.moviebkg.user.model.UserLogin;
+
+import com.sid.moviebkg.common.model.user.CardDetails;
+import com.sid.moviebkg.common.model.user.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
