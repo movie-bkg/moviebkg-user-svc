@@ -1,6 +1,6 @@
 package com.sid.moviebkg.user.config;
 
-import com.sid.moviebkg.user.filter.JwtAuthenticationFilter;
+import com.sid.moviebkg.user.filter.AuthenticationFilter;
 import com.sid.moviebkg.user.filter.RequestResponseLoggingFilter;
 import com.sid.moviebkg.user.filter.TraceResponseFilter;
 import org.apache.commons.lang3.BooleanUtils;
@@ -42,7 +42,7 @@ public class WebSecurityConfiguration {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter,
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationFilter jwtAuthFilter,
                                            RequestResponseLoggingFilter requestResponseLoggingFilter, TraceResponseFilter traceResponseFilter) throws Exception {
         HttpSecurity httpSecurity = http.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults());
         if (tokenDisabled != null && BooleanUtils.isTrue(tokenDisabled)) {
@@ -57,8 +57,8 @@ public class WebSecurityConfiguration {
                     .authenticated())
                     .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(requestResponseLoggingFilter, JwtAuthenticationFilter.class)
-                    .addFilterAfter(traceResponseFilter, JwtAuthenticationFilter.class);
+                    .addFilterBefore(requestResponseLoggingFilter, AuthenticationFilter.class)
+                    .addFilterAfter(traceResponseFilter, AuthenticationFilter.class);
         }
 
         return httpSecurity.build();

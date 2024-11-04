@@ -1,12 +1,12 @@
-package com.sid.moviebkg.user.flow.preference.controller;
+package com.sid.moviebkg.user.controller;
 
 import com.sid.moviebkg.common.dto.ResponseMsgDto;
 import com.sid.moviebkg.common.logging.MBkgLogger;
 import com.sid.moviebkg.common.logging.MBkgLoggerFactory;
 import com.sid.moviebkg.common.utils.ExceptionUtils;
-import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
+import com.sid.moviebkg.user.dto.UserPreferenceDto;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
-import com.sid.moviebkg.user.flow.preference.service.PreferenceService;
+import com.sid.moviebkg.user.service.PreferenceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

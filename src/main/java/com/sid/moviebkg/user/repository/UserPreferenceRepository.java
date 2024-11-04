@@ -1,4 +1,4 @@
-package com.sid.moviebkg.user.flow.preference.repository;
+package com.sid.moviebkg.user.repository;
 
 import com.sid.moviebkg.common.model.user.UserLogin;
 import com.sid.moviebkg.common.model.user.UserPreference;

@@ -1,6 +1,6 @@
-package com.sid.moviebkg.user.flow.preference.service;
+package com.sid.moviebkg.user.service;
 
-import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
+import com.sid.moviebkg.user.dto.UserPreferenceDto;
 
 public interface PreferenceService {
     void savePreferences(UserPreferenceDto preferenceRequest);

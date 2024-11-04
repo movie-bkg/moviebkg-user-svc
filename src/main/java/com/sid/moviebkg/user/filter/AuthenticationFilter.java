@@ -1,6 +1,8 @@
 package com.sid.moviebkg.user.filter;
 
 import com.sid.moviebkg.common.token.service.JwtService;
+import com.sid.moviebkg.user.auth.service.BasicAuthenticationServiceImpl;
+import com.sid.moviebkg.user.auth.service.JwtAuthenticationServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,18 +30,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.sid.moviebkg.user.util.UserCmnConstants.*;
+import static org.springframework.security.web.authentication.www.BasicAuthenticationConverter.AUTHENTICATION_SCHEME_BASIC;
 
 
 @Component
 @Order(2)
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
     @Value("${token.disabled:#{null}}")
     private Boolean tokenDisabled;
+    private final BasicAuthenticationServiceImpl basicAuthenticationService;
+    private final JwtAuthenticationServiceImpl jwtAuthenticationService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -52,35 +54,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         final String authHeader = request.getHeader(AUTHORIZATION);
-        final String jwt;
-        final String userId;
-        if (authHeader == null || !authHeader.startsWith(BEARER)) {
+        boolean isBasicAuth = authHeader != null && authHeader.startsWith(AUTHENTICATION_SCHEME_BASIC);
+        boolean isJwtAuth = authHeader != null && authHeader.startsWith(BEARER);
+        if (request.getServletPath().contains(SERVLET_PATH_USER_DETAILS) && isBasicAuth) {
+            UsernamePasswordAuthenticationToken token = basicAuthenticationService.authenticate(authHeader);
+            setAuthToken(request, token);
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
-        userId = jwtService.extractUsername(jwt, secretKey);
-        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null && jwtService.isTokenValid(jwt, secretKey)) {
-            Claims claims = jwtService.extractAllClaims(jwt, secretKey);
-            String roles = claims.get("role", String.class);
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            if (StringUtils.hasText(roles)) {
-                authorities = Arrays.stream(roles.split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-            }
-
-            UserDetails userDetails = new User(userId, userId, authorities);
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (isJwtAuth) {
+            UsernamePasswordAuthenticationToken token = jwtAuthenticationService.authenticate(authHeader);
+            setAuthToken(request, token);
+            filterChain.doFilter(request, response);
+            return;
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void setAuthToken(HttpServletRequest request, UsernamePasswordAuthenticationToken token) {
+        if (token != null) {
+            token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(token);
+        }
     }
 }

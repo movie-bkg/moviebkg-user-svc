@@ -31,3 +31,10 @@ application:
 # Configuring for enabling and disabling jwt token flow
 token:
   disabled: false
+
+#Configuring username and password for Basic Authentication, might be used in some cases
+spring:
+  security:
+    user:
+      name: mvbkg-app
+      password: mvbkgdev

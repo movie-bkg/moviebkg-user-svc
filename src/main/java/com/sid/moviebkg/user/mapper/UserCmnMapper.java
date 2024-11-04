@@ -5,8 +5,8 @@ import com.sid.moviebkg.common.model.user.UserLogin;
 import com.sid.moviebkg.common.model.user.UserPreference;
 import com.sid.moviebkg.user.flow.card.details.dto.CardDetailsDto;
 import com.sid.moviebkg.user.flow.card.details.dto.UserCardDetails;
-import com.sid.moviebkg.user.flow.preference.dto.PreferenceDto;
-import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
+import com.sid.moviebkg.user.dto.PreferenceDto;
+import com.sid.moviebkg.user.dto.UserPreferenceDto;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;

@@ -1,4 +1,4 @@
-package com.sid.moviebkg.user.flow.preference.dto;
+package com.sid.moviebkg.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

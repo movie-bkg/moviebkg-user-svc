@@ -6,6 +6,7 @@ import com.sid.moviebkg.common.logging.MBkgLogger;
 import com.sid.moviebkg.common.logging.MBkgLoggerFactory;
 import com.sid.moviebkg.common.model.user.CardDetails;
 import com.sid.moviebkg.common.model.user.UserLogin;
+import com.sid.moviebkg.common.utils.ValidationUtil;
 import com.sid.moviebkg.user.authentication.config.ResponseMsgConfiguration;
 import com.sid.moviebkg.user.authentication.repository.UserRepository;
 import com.sid.moviebkg.user.flow.card.details.dto.CardDetailsDto;
@@ -13,7 +14,6 @@ import com.sid.moviebkg.user.flow.card.details.dto.UserCardDetails;
 import com.sid.moviebkg.user.flow.card.details.repository.CardDetailsRepository;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
 import com.sid.moviebkg.user.mapper.UserCmnMapper;
-import com.sid.moviebkg.user.util.UserCmnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class CardDetailsServiceImpl implements CardDetailsService {
     private MBkgLogger logger = MBkgLoggerFactory.getLogger(CardDetailsServiceImpl.class);
     private final UserRepository userRepository;
     private final CardDetailsRepository cardDetailsRepository;
-    private final UserCmnUtils userCmnUtils;
+    private final ValidationUtil validationUtil;
     private final UserCmnMapper userCmnMapper;
     private final ResponseMsgConfiguration msgConfiguration;
 
@@ -57,7 +57,7 @@ public class CardDetailsServiceImpl implements CardDetailsService {
         }
         List<CardDetailsDto> incomingCardDetails = details.getCardDetails();
         List<CardDetails> dbCardDetails = cardDetailsRepository.findByUser(user.get());
-        List<CardDetailsDto> detailsToSave = userCmnUtils.filterList(incomingCardDetails, detailsDto -> !userCmnUtils.isAlreadyPresent(detailsDto, dbCardDetails,
+        List<CardDetailsDto> detailsToSave = validationUtil.filterList(incomingCardDetails, detailsDto -> !validationUtil.isAlreadyPresent(detailsDto, dbCardDetails,
                 (cardDetailDto, dbCardDetail) -> dbCardDetail.getCardNo().equals(detailsDto.getCardNo())
                         || dbCardDetail.getExpiryDate().equals(LocalDate.parse(detailsDto.getExpiryDate()))));
         if (CollectionUtils.isEmpty(detailsToSave)) {
@@ -91,7 +91,7 @@ public class CardDetailsServiceImpl implements CardDetailsService {
         return details != null && details.getUserId() != null
                 && StringUtils.hasText(details.getUserId())
                 && !CollectionUtils.isEmpty(details.getCardDetails())
-                && userCmnUtils.validateList(details.getCardDetails(),
+                && validationUtil.validateList(details.getCardDetails(),
                 cardDetailsDto -> !StringUtils.hasText(cardDetailsDto.getCardType())
                         || !StringUtils.hasText(cardDetailsDto.getCardNo())
                         || !StringUtils.hasText(cardDetailsDto.getBillingAddress())

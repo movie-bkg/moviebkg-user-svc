@@ -1,4 +1,4 @@
-package com.sid.moviebkg.user.flow.preference.dto;
+package com.sid.moviebkg.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

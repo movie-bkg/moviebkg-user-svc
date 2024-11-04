@@ -23,6 +23,9 @@ public class UserCmnConstants {
     public static final String SWAGGER_UI_HTML = "/swagger-ui.html";
     public static final String TRACEID = "traceId";
     public static final String TRACE_ID = "trace_Id";
+    public static final String COLON = ":";
+    public static final String BASIC = "Basic ";
+    public static final String SERVLET_PATH_USER_DETAILS = "/user/details";
 
     public static final String LOGIN_FAILED_WITH_ERROR = "Login Failed with error";
     public static final String REGISTER_FAILED_WITH_ERROR = "Register Failed with error";

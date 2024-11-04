@@ -1,17 +1,17 @@
-package com.sid.moviebkg.user.flow.preference.service;
+package com.sid.moviebkg.user.service;
 
 import com.sid.moviebkg.common.dto.MessageDto;
 import com.sid.moviebkg.common.dto.ResponseMsgDto;
 import com.sid.moviebkg.common.model.user.UserLogin;
 import com.sid.moviebkg.common.model.user.UserPreference;
+import com.sid.moviebkg.common.utils.ValidationUtil;
 import com.sid.moviebkg.user.authentication.config.ResponseMsgConfiguration;
 import com.sid.moviebkg.user.authentication.repository.UserRepository;
 import com.sid.moviebkg.user.flow.exception.UserFlowException;
-import com.sid.moviebkg.user.flow.preference.dto.PreferenceDto;
-import com.sid.moviebkg.user.flow.preference.dto.UserPreferenceDto;
-import com.sid.moviebkg.user.flow.preference.repository.UserPreferenceRepository;
+import com.sid.moviebkg.user.dto.PreferenceDto;
+import com.sid.moviebkg.user.dto.UserPreferenceDto;
+import com.sid.moviebkg.user.repository.UserPreferenceRepository;
 import com.sid.moviebkg.user.mapper.UserCmnMapper;
-import com.sid.moviebkg.user.util.UserCmnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class PreferenceServiceImpl implements PreferenceService {
 
     private final UserPreferenceRepository preferenceRepository;
     private final UserRepository userRepository;
-    private final UserCmnUtils userCmnUtils;
+    private final ValidationUtil validationUtil;
     private final UserCmnMapper userCmnMapper;
     private final ResponseMsgConfiguration msgConfiguration;
 
@@ -49,7 +49,7 @@ public class PreferenceServiceImpl implements PreferenceService {
             }
             List<PreferenceDto> incomingPreferences = preferenceRequest.getPreferences();
             List<UserPreference> dbPreferences = preferenceRepository.findByUser(user.get());
-            List<PreferenceDto> preferencesToSave = userCmnUtils.filterList(incomingPreferences, incoming -> !userCmnUtils.isAlreadyPresent(
+            List<PreferenceDto> preferencesToSave = validationUtil.filterList(incomingPreferences, incoming -> !validationUtil.isAlreadyPresent(
                     incoming, dbPreferences, (preferenceDto, dbPreference) -> Objects.equals(dbPreference.getGenre(), incoming.getGenre())
                             && Objects.equals(dbPreference.getLanguage(), incoming.getLanguage())
             ));
@@ -90,7 +90,7 @@ public class PreferenceServiceImpl implements PreferenceService {
         return preferenceRequest != null && preferenceRequest.getUserId() != null
                 && StringUtils.hasText(preferenceRequest.getUserId())
                 && !CollectionUtils.isEmpty(preferenceRequest.getPreferences())
-                && userCmnUtils.validateList(preferenceRequest.getPreferences(), preferenceDto ->
+                && validationUtil.validateList(preferenceRequest.getPreferences(), preferenceDto ->
                 !StringUtils.hasText(preferenceDto.getGenre())
                 || !StringUtils.hasText(preferenceDto.getLanguage()));
     }
